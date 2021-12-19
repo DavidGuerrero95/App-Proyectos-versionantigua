@@ -1,6 +1,7 @@
 package com.app.proyectos.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -12,5 +13,8 @@ public interface NotificacionesFeignClient {
 
 	@PutMapping("/notificaciones/proyecto/edit/estado/")
 	public void enviarMensajeEstado(@RequestParam("nombre") String nombre, @RequestParam("estado") Integer estado);
+	
+	@DeleteMapping("/notificaciones/suscripciones/borrar/")
+	public Boolean borrarSuscripciones(@RequestParam("nombre") String nombre);
 
 }

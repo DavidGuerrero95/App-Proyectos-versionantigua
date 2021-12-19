@@ -1,6 +1,5 @@
 package com.app.proyectos.services;
 
-import java.io.IOException;
 import java.util.Date;
 
 import org.bson.types.Binary;
@@ -20,53 +19,12 @@ public class ProyectoService implements IProyectoService {
 
 	@Autowired
 	ProyectosRepository pRepository;
-	
+
 	@Autowired
 	ProyectosFilesRepository pfRepository;
-	
+
 	@Autowired
 	ProyectosPhotosRepository phRepository;
-
-	@Override
-	public ProyectosPhotos crearPhoto(MultipartFile file, String nombre) throws IOException {
-		ProyectosPhotos pPhotos = new ProyectosPhotos();
-		if(phRepository.existsByNombre(nombre)) {
-			pPhotos = phRepository.findByNombre(nombre);
-		} else {
-			pPhotos.setNombre(nombre);
-		}
-		if (file == null) {
-			return pPhotos;
-		}
-		String fileName = file.getOriginalFilename();
-		pPhotos.setName(fileName);
-		pPhotos.setCreatedtime(new Date());
-		pPhotos.setContent(new Binary(file.getBytes()));
-		pPhotos.setContenttype(file.getContentType());
-		pPhotos.setSize(file.getSize());
-		return pPhotos;
-	}
-
-	@Override
-	public ProyectosFiles crearFile(MultipartFile file, String nombre) throws IOException {
-		ProyectosFiles pFiles = new ProyectosFiles();
-		pFiles.setNombre(nombre);
-		if(pfRepository.existsByNombre(nombre)) {
-			pFiles = pfRepository.findByNombre(nombre);
-		} else {
-			pFiles.setNombre(nombre);
-		}
-		if (file == null) {
-			return pFiles;
-		}
-		String fileName = file.getOriginalFilename();
-		pFiles.setName(fileName);
-		pFiles.setCreatedtime(new Date());
-		pFiles.setContent(new Binary(file.getBytes()));
-		pFiles.setContenttype(file.getContentType());
-		pFiles.setSize(file.getSize());
-		return pFiles;
-	}
 
 	@Override
 	public String editarProyecto(String nombre, Proyectos proyectoEditar) {
@@ -109,6 +67,43 @@ public class ProyectoService implements IProyectoService {
 		}
 		pRepository.save(proyecto);
 		return "Actualizado correctamente";
+	}
+
+	@Override
+	public void savePhoto(String nombre, MultipartFile file) {
+		try {
+			ProyectosPhotos ph = phRepository.findByNombre(nombre);
+			ph.setNombre(nombre);
+			ph.setName(file.getOriginalFilename());
+			ph.setSize(file.getSize());
+			ph.setContent(new Binary(file.getBytes()));
+			ph.setContentType(file.getContentType());
+			ph.setCreatedtime(new Date());
+			String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+			ph.setSuffix(suffix);
+			phRepository.save(ph);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void saveFile(String nombre, MultipartFile file) {
+		try {
+			ProyectosFiles pf = pfRepository.findByNombre(nombre);
+			pf.setNombre(nombre);
+			pf.setName(file.getOriginalFilename());
+			pf.setSize(file.getSize());
+			pf.setContent(new Binary(file.getBytes()));
+			pf.setContentType(file.getContentType());
+			pf.setCreatedtime(new Date());
+			String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+			pf.setSuffix(suffix);
+			pfRepository.save(pf);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

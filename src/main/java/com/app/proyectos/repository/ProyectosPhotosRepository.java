@@ -15,4 +15,5 @@ public interface ProyectosPhotosRepository extends MongoRepository<ProyectosPhot
 	public Boolean existsByNombre(@Param("nombre") String nombre);
 
 	public ProyectosPhotos findImageById(String id, Class<ProyectosPhotos> class1);
+
 }

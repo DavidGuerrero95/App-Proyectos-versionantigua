@@ -22,21 +22,25 @@ public class ProyectosPhotos {
 	private String name; // file name
 	private Date createdtime; // upload time
 	private Binary content; // file content
-	private String contenttype; // file type
+	private String contentType; // file type
 	private long size; // file size
+	private String suffix;
+	private String link;
 
 	public ProyectosPhotos() {
 	}
 
-	public ProyectosPhotos(String nombre, String name, Date createdtime, Binary content, String contenttype,
-			long size) {
+	public ProyectosPhotos(String nombre, String name, Date createdtime, Binary content, String contentType, long size,
+			String suffix, String link) {
 		super();
 		this.nombre = nombre;
 		this.name = name;
 		this.createdtime = createdtime;
 		this.content = content;
-		this.contenttype = contenttype;
+		this.contentType = contentType;
 		this.size = size;
+		this.suffix = suffix;
+		this.link = link;
 	}
 
 	public String getId() {
@@ -79,12 +83,12 @@ public class ProyectosPhotos {
 		this.content = content;
 	}
 
-	public String getContenttype() {
-		return contenttype;
+	public String getContentType() {
+		return contentType;
 	}
 
-	public void setContenttype(String contenttype) {
-		this.contenttype = contenttype;
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	public long getSize() {
@@ -93,6 +97,22 @@ public class ProyectosPhotos {
 
 	public void setSize(long size) {
 		this.size = size;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 }

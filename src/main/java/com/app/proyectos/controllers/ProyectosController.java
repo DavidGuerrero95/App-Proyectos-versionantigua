@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -109,8 +111,8 @@ public class ProyectosController {
 	@PostMapping("/proyectos/crear/")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public ResponseEntity<?> crearProyectos(@RequestBody @Validated Proyectos proyectos) throws IOException {
-		ProyectosPhotos pPhotos = new ProyectosPhotos(proyectos.getNombre(), null, null, null, null, 0);
-		ProyectosFiles pFiles = new ProyectosFiles(proyectos.getNombre(), null, null, null, null, 0);
+		ProyectosPhotos pPhotos = new ProyectosPhotos(proyectos.getNombre(), "", new Date(), null, "", 0, "", "");
+		ProyectosFiles pFiles = new ProyectosFiles(proyectos.getNombre(), "", new Date(), null, "", 0, "");
 		proyectos.setLocalizacion(new ArrayList<Double>(Arrays.asList(
 				new BigDecimal(proyectos.getLocalizacion().get(0)).setScale(5, RoundingMode.HALF_UP).doubleValue(),
 				new BigDecimal(proyectos.getLocalizacion().get(1)).setScale(5, RoundingMode.HALF_UP).doubleValue())));
@@ -154,10 +156,27 @@ public class ProyectosController {
 	@ResponseStatus
 	public ResponseEntity<?> ponerImagen(@PathVariable("nombre") String nombre,
 			@RequestParam(value = "image") MultipartFile image) throws IOException {
-		ProyectosPhotos pPhotos = phRepository.findByNombre(nombre);
-		pPhotos = pService.crearPhoto(image, nombre);
-		phRepository.save(pPhotos);
-		return ResponseEntity.ok("Foto Creada correctamente");
+		if (image != null && !image.isEmpty()) {
+			pService.savePhoto(nombre, image);
+			return ResponseEntity.ok("Foto Creada correctamente");
+		} else {
+			return ResponseEntity.ok("Inserte la imagen");
+		}
+	}
+
+	@GetMapping("/proyectos/imagen/binary/{nombre}")
+	@ResponseStatus(HttpStatus.OK)
+	public String binaryToStringPhoto(@PathVariable("nombre") String nombre) {
+		if (phRepository.existsByNombre(nombre)) {
+			ProyectosPhotos ph = phRepository.findByNombre(nombre);
+			byte[] data = null;
+			ProyectosPhotos file = phRepository.findImageById(ph.getId(), ProyectosPhotos.class);
+			if (file != null) {
+				data = file.getContent().getData();
+			}
+			return Base64.getEncoder().encodeToString(data);
+		}
+		return "Proyecto no encontrado";
 	}
 
 	// Descargar imagen
@@ -165,23 +184,43 @@ public class ProyectosController {
 			MediaType.IMAGE_PNG_VALUE })
 	@ResponseStatus(HttpStatus.OK)
 	public byte[] image(@PathVariable("nombre") String nombre) {
-		ProyectosPhotos proyecto = phRepository.findByNombre(nombre);
-		byte[] data = null;
-		ProyectosPhotos file = phRepository.findImageById(proyecto.getId(), ProyectosPhotos.class);
-		if (file != null) {
-			data = file.getContent().getData();
+		if (phRepository.existsByNombre(nombre)) {
+			ProyectosPhotos proyecto = phRepository.findByNombre(nombre);
+			byte[] data = null;
+			ProyectosPhotos file = phRepository.findImageById(proyecto.getId(), ProyectosPhotos.class);
+			if (file != null) {
+				data = file.getContent().getData();
+			}
+			return data;
 		}
-		return data;
+		return null;
 	}
 
 	@PutMapping("/proyectos/file/poner/{nombre}")
 	@ResponseStatus
 	public ResponseEntity<?> ponerFile(@PathVariable("nombre") String nombre,
-			@RequestParam(value = "file") MultipartFile image) throws IOException {
-		ProyectosFiles pFiles = pfRepository.findByNombre(nombre);
-		pFiles = pService.crearFile(image, nombre);
-		pfRepository.save(pFiles);
-		return ResponseEntity.ok("PDF Creada correctamente");
+			@RequestParam(value = "file") MultipartFile file) throws IOException {
+		if (file != null && !file.isEmpty()) {
+			pService.saveFile(nombre, file);
+			return ResponseEntity.ok("Foto Creada correctamente");
+		} else {
+			return ResponseEntity.ok("Inserte la imagen");
+		}
+	}
+
+	@GetMapping("/proyectos/file/binary/{nombre}")
+	@ResponseStatus(HttpStatus.OK)
+	public String binaryToStringFile(@PathVariable("nombre") String nombre) {
+		if (phRepository.existsByNombre(nombre)) {
+			ProyectosFiles pf = pfRepository.findByNombre(nombre);
+			byte[] data = null;
+			ProyectosFiles file = pfRepository.findImageById(pf.getId(), ProyectosFiles.class);
+			if (file != null) {
+				data = file.getContent().getData();
+			}
+			return Base64.getEncoder().encodeToString(data);
+		}
+		return "Proyecto no encontrado";
 	}
 
 	@GetMapping(value = "/proyectos/file/downloadFile/{nombre}", produces = { MediaType.APPLICATION_PDF_VALUE })
@@ -212,7 +251,11 @@ public class ProyectosController {
 	public Boolean eliminarProyectos(@PathVariable("nombre") String nombre) throws IOException {
 		try {
 			Proyectos proyectos = pRepository.findByNombre(nombre);
+			ProyectosFiles pf = pfRepository.findByNombre(nombre);
+			ProyectosPhotos pp = phRepository.findByNombre(nombre);
 			pRepository.delete(proyectos);
+			pfRepository.delete(pf);
+			phRepository.delete(pp);
 			if (cbFactory.create("proyecto").run(() -> rClient.deleteProyectos(nombre), e -> errorConexion(e))) {
 				logger.info("Eliminacion Recomendacion");
 			}
@@ -230,6 +273,9 @@ public class ProyectosController {
 				logger.info("Eliminacion PreguntasRespuestas");
 			}
 			if (cbFactory.create("proyecto").run(() -> sClient.borrarSuscripciones(nombre), e -> errorConexion(e))) {
+				logger.info("Eliminacion Suscripciones");
+			}
+			if (cbFactory.create("proyecto").run(() -> nClient.borrarSuscripciones(nombre), e -> errorConexion(e))) {
 				logger.info("Eliminacion Suscripciones");
 			}
 			return true;
@@ -334,4 +380,18 @@ public class ProyectosController {
 		return 1;
 	}
 
+	@PutMapping("/proyectos/imagen/poner/link/{nombre}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public void linkImagen(@PathVariable String nombre, @RequestParam("link") String link) {
+		ProyectosPhotos pp = phRepository.findByNombre(nombre);
+		pp.setLink(link);
+		phRepository.save(pp);
+	}
+
+	@GetMapping("/proyectos/imagen/ver/link/{nombre}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> verImagen(@PathVariable String nombre) {
+		ProyectosPhotos pp = phRepository.findByNombre(nombre);
+		return ResponseEntity.ok(pp.getLink());
+	}
 }
