@@ -245,6 +245,17 @@ public class ProyectosController {
 			}
 		}
 	}
+	
+	@PutMapping("/proyectos/eliminarPeticionAdmin/{nombre}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public void eliminarPeticionProyecto(@PathVariable("nombre") String nombre) {
+		if (existNombre(nombre)) {
+			if (cbFactory.create("proyecto").run(() -> iClient.eliminarPeticionProyecto(nombre),
+					e -> errorConexion(e))) {
+				logger.info("Eliminacion de peticion lista");
+			}
+		}
+	}
 
 	@DeleteMapping("/proyectos/eliminar/{nombre}")
 	@ResponseStatus(code = HttpStatus.OK)
@@ -289,6 +300,12 @@ public class ProyectosController {
 	@ResponseStatus(code = HttpStatus.FOUND)
 	public String descripcionMuro(@PathVariable("nombre") String nombre) {
 		return pRepository.findByNombre(nombre).getDescripcion();
+	}
+	
+	@GetMapping("/proyectos/ver/proyecto/{nombre}")
+	@ResponseStatus(code = HttpStatus.FOUND)
+	public Proyectos verProyecto(@PathVariable("nombre") String nombre) {
+		return pRepository.findByNombre(nombre);
 	}
 
 	@GetMapping("/proyectos/listarByMuro/{codigo}")
