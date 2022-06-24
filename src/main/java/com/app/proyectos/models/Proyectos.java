@@ -57,6 +57,8 @@ public class Proyectos {
 	private Integer muro;
 	private String creador;
 	private LocalDate fecha;
+	private Boolean gamificacion;
+	private String mensajeParticipacion;
 
 	public Proyectos() {
 	}
@@ -64,7 +66,7 @@ public class Proyectos {
 	public Proyectos(String nombre, Integer codigoProyecto, List<String> palabrasClave, List<Double> localizacion,
 			String resumen, String objetivos, String descripcion, String principalItos, Long presupuesto,
 			List<String> cronograma, Boolean enabled, Integer estadoProyecto, List<Integer> proyectoDesarrollo,
-			Integer muro, String creador, LocalDate fecha) {
+			Integer muro, String creador, LocalDate fecha, Boolean gamificacion, String mensajeParticipacion) {
 		super();
 		this.nombre = nombre;
 		this.codigoProyecto = codigoProyecto;
@@ -82,6 +84,8 @@ public class Proyectos {
 		this.muro = muro;
 		this.creador = creador;
 		this.fecha = fecha;
+		this.gamificacion = gamificacion;
+		this.mensajeParticipacion = mensajeParticipacion;
 	}
 
 	public String getId() {
@@ -218,6 +222,22 @@ public class Proyectos {
 
 	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
+	}
+
+	public Boolean getGamificacion() {
+		return gamificacion;
+	}
+
+	public void setGamificacion(Boolean gamificacion) {
+		this.gamificacion = gamificacion;
+	}
+
+	public String getMensajeParticipacion() {
+		return mensajeParticipacion;
+	}
+
+	public void setMensajeParticipacion(String mensajeParticipacion) {
+		this.mensajeParticipacion = mensajeParticipacion;
 	}
 
 }

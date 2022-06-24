@@ -65,6 +65,10 @@ public class ProyectoService implements IProyectoService {
 		if (proyectoEditar.getProyectoDesarrollo() != null) {
 			proyecto.setProyectoDesarrollo(proyectoEditar.getProyectoDesarrollo());
 		}
+		if (proyectoEditar.getGamificacion() != null)
+			proyecto.setGamificacion(proyectoEditar.getGamificacion());
+		if (proyectoEditar.getMensajeParticipacion() != null)
+			proyecto.setMensajeParticipacion(proyectoEditar.getMensajeParticipacion());
 		pRepository.save(proyecto);
 		return "Actualizado correctamente";
 	}

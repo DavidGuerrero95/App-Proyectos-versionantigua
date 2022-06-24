@@ -31,9 +31,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.app.proyectos.clients.BusquedaFeignClient;
 import com.app.proyectos.clients.EstadisticaFeignClient;
+import com.app.proyectos.clients.GamificacionFeignClient;
 import com.app.proyectos.clients.InterventorFeignClient;
 import com.app.proyectos.clients.MuroFeignClient;
 import com.app.proyectos.clients.NotificacionesFeignClient;
+import com.app.proyectos.clients.ParametrosFeignClient;
 import com.app.proyectos.clients.PreguntasRespuestasFeignClient;
 import com.app.proyectos.clients.RecomendacionesFeignClient;
 import com.app.proyectos.clients.SuscripcionesFeignClient;
@@ -44,6 +46,7 @@ import com.app.proyectos.repository.ProyectosFilesRepository;
 import com.app.proyectos.repository.ProyectosPhotosRepository;
 import com.app.proyectos.repository.ProyectosRepository;
 import com.app.proyectos.services.IProyectoService;
+import com.mongodb.MongoException;
 
 @RestController
 public class ProyectosController {
@@ -90,6 +93,12 @@ public class ProyectosController {
 	@Autowired
 	NotificacionesFeignClient nClient;
 
+	@Autowired
+	ParametrosFeignClient paramClient;
+	
+	@Autowired
+	GamificacionFeignClient gClient;
+
 	@GetMapping("/proyectos/listar/")
 	@ResponseStatus(code = HttpStatus.OK)
 	public List<Proyectos> getProyectos() throws IOException {
@@ -116,6 +125,13 @@ public class ProyectosController {
 		proyectos.setLocalizacion(new ArrayList<Double>(Arrays.asList(
 				new BigDecimal(proyectos.getLocalizacion().get(0)).setScale(5, RoundingMode.HALF_UP).doubleValue(),
 				new BigDecimal(proyectos.getLocalizacion().get(1)).setScale(5, RoundingMode.HALF_UP).doubleValue())));
+		if (proyectos.getGamificacion() == null)
+			proyectos.setGamificacion(false);
+		if (proyectos.getMensajeParticipacion() == null)
+			proyectos.setMensajeParticipacion("Gracias por participar en el proyecto: " + proyectos.getNombre()
+					+ ", sus aportes serán muy valiosos para el diseño y seguimiento del proyecto."
+					+ " Puedes ver las estadística de participación en la City SuperApp."
+					+ "\nDeseas adquirir información de la evolución del proyecto, inscríbete!");
 		if (cbFactory.create("proyecto").run(() -> bClient.editarProyecto(proyectos.getNombre()),
 				e -> errorConexion(e))) {
 			logger.info("Creacion Busqueda");
@@ -124,7 +140,10 @@ public class ProyectosController {
 			proyectos.setMuro(
 					cbFactory.create("proyecto").run(() -> mClient.crearMurosProyectos(proyectos), e -> errorMuro(e)));
 		}
-		proyectos.setCodigoProyecto(pRepository.findAll().size() + 1);
+		if (cbFactory.create("proyecto").run(() -> paramClient.agregarProyecto(), e -> errorConexion(e))) {
+			logger.info("Agregado Correctamente");
+		}
+		proyectos.setCodigoProyecto(paramClient.obtenerCodigo());
 		if (cbFactory.create("proyecto").run(() -> prClient.crearCuestionario(proyectos.getNombre()),
 				e -> errorConexion(e))) {
 			logger.info("Creacion PreguntasRespuestas");
@@ -245,7 +264,7 @@ public class ProyectosController {
 			}
 		}
 	}
-	
+
 	@PutMapping("/proyectos/eliminarPeticionAdmin/{nombre}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public void eliminarPeticionProyecto(@PathVariable("nombre") String nombre) {
@@ -264,6 +283,11 @@ public class ProyectosController {
 			Proyectos proyectos = pRepository.findByNombre(nombre);
 			ProyectosFiles pf = pfRepository.findByNombre(nombre);
 			ProyectosPhotos pp = phRepository.findByNombre(nombre);
+			if(gClient.existeGamificacionProyecto(nombre)) {
+				if (cbFactory.create("proyecto").run(() -> gClient.eliminarGamificacionProyecto(nombre), e -> errorConexion(e))) {
+					logger.info("Eliminacion Recomendacion");
+				}
+			}
 			pRepository.delete(proyectos);
 			pfRepository.delete(pf);
 			phRepository.delete(pp);
@@ -301,7 +325,7 @@ public class ProyectosController {
 	public String descripcionMuro(@PathVariable("nombre") String nombre) {
 		return pRepository.findByNombre(nombre).getDescripcion();
 	}
-	
+
 	@GetMapping("/proyectos/ver/proyecto/{nombre}")
 	@ResponseStatus(code = HttpStatus.FOUND)
 	public Proyectos verProyecto(@PathVariable("nombre") String nombre) {
@@ -410,5 +434,41 @@ public class ProyectosController {
 	public ResponseEntity<?> verImagen(@PathVariable String nombre) {
 		ProyectosPhotos pp = phRepository.findByNombre(nombre);
 		return ResponseEntity.ok(pp.getLink());
+	}
+
+	@PutMapping("/proyectos/gamificacion/habilitar/{nombre}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> habilitarGamification(@PathVariable String nombre) throws MongoException {
+		Proyectos p = pRepository.findByNombre(nombre);
+		p.setGamificacion(true);
+		pRepository.save(p);
+		return ResponseEntity.ok("Habilitada la gamificacion en el proyectos: " + nombre + " Correctamente");
+	}
+
+	@PutMapping("/proyectos/gamificacion/deshabilitar/{nombre}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> deshabilitarGamification(@PathVariable String nombre) throws MongoException {
+		Proyectos p = pRepository.findByNombre(nombre);
+		p.setGamificacion(false);
+		pRepository.save(p);
+		return ResponseEntity.ok("Deshabilitada la gamificacion en el proyectos: " + nombre + " Correctamente");
+	}
+
+	@GetMapping("/proyectos/gamificacion/ver-estado/{nombre}")
+	public Boolean verEstadoGamificacion(@PathVariable("nombre") String nombre) {
+		Proyectos p = pRepository.findByNombre(nombre);
+		return p.getGamificacion();
+	}
+
+	@PutMapping("/proyectos/arreglar/")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> arreglarProyectos() throws MongoException {
+		List<Proyectos> p = pRepository.findAll();
+		p.forEach(x -> {
+			x.setMensajeParticipacion("");
+			x.setGamificacion(false);
+			pRepository.save(x);
+		});
+		return ResponseEntity.ok("Arreglado correctamente");
 	}
 }

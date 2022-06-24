@@ -1,6 +1,7 @@
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\config\SwaggerConfiguration.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\models\ProyectosFiles.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\repository\ProyectosFilesRepository.java
+S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\ParametrosFeignClient.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\MuroFeignClient.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\AppProyectosApplication.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\controllers\ProyectosController.java
@@ -10,6 +11,7 @@ S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\c
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\repository\ProyectosRepository.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\services\IProyectoService.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\BusquedaFeignClient.java
+S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\GamificacionFeignClient.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\repository\ProyectosPhotosRepository.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\services\ProyectoService.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\NotificacionesFeignClient.java
