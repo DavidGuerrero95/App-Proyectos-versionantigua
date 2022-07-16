@@ -9,10 +9,10 @@ import com.app.proyectos.models.ProyectosFiles;
 public interface ProyectosFilesRepository extends MongoRepository<ProyectosFiles, String> {
 
 	@RestResource(path = "buscar-name")
-	public ProyectosFiles findByNombre(@Param("nombre") String nombre);
+	public ProyectosFiles findByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
 
 	@RestResource(path = "existNombre")
-	public Boolean existsByNombre(@Param("nombre") String nombre);
-	
+	public Boolean existsByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
+
 	public ProyectosFiles findImageById(String id, Class<ProyectosFiles> class1);
 }

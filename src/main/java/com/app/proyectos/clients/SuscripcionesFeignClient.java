@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SuscripcionesFeignClient {
 
 	@PostMapping("/suscripciones/crear/")
-	public Boolean crearSuscripciones(@RequestParam("nombre") String nombre);
+	public Boolean crearSuscripciones(@RequestParam("idProyecto") Integer idProyecto);
 
-	@DeleteMapping("/suscripciones/borrar/{nombre}")
-	public Boolean borrarSuscripciones(@PathVariable("nombre") String nombre);
+	@DeleteMapping("/suscripciones/borrar/{idProyecto}")
+	public Boolean borrarSuscripciones(@PathVariable("idProyecto") Integer idProyecto);
 
 }

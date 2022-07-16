@@ -8,11 +8,11 @@ import com.app.proyectos.models.ProyectosPhotos;
 
 public interface ProyectosPhotosRepository extends MongoRepository<ProyectosPhotos, String> {
 
-	@RestResource(path = "buscar-name")
-	public ProyectosPhotos findByNombre(@Param("nombre") String nombre);
+	@RestResource(path = "buscar-codigo")
+	public ProyectosPhotos findByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
 
-	@RestResource(path = "existNombre")
-	public Boolean existsByNombre(@Param("nombre") String nombre);
+	@RestResource(path = "exist-codigo")
+	public Boolean existsByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
 
 	public ProyectosPhotos findImageById(String id, Class<ProyectosPhotos> class1);
 

@@ -7,17 +7,14 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import com.app.proyectos.models.Proyectos;
 
 public interface ProyectosRepository extends MongoRepository<Proyectos, String> {
-	
-	@RestResource(path = "buscar-name")
-	public Proyectos findByNombre(@Param("nombre") String nombre);
-	
-	@RestResource(path = "buscar")
-	public Proyectos findByNombreOrCodigoProyecto(@Param("nombre") String nombre, @Param("codigoProyecto") Integer codigoProyecto);
-	
-	@RestResource(path = "buscar-label")
-	public Proyectos findByCodigoProyectoOrNombre(@Param("codigoProyecto") Integer codigoProyecto,
-			@Param("nombre") String nombre);
-	
-	@RestResource(path = "existNombre")
-	public Boolean existsByNombre(@Param("nombre") String nombre);
+
+	@RestResource(path = "buscar-codigo")
+	public Proyectos findByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
+
+	@RestResource(path = "exist-codigo")
+	public Boolean existsByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
+
+	@RestResource(path = "delete-codigo")
+	public void deleteByCodigoProyecto(@Param("codigoProyecto") Integer codigoProyecto);
+
 }

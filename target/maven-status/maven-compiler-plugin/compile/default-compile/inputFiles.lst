@@ -3,9 +3,11 @@ S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\c
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\repository\ProyectosFilesRepository.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\ParametrosFeignClient.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\MuroFeignClient.java
+S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\RespuestasFeignClient.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\AppProyectosApplication.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\controllers\ProyectosController.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\PreguntasRespuestasFeignClient.java
+S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\clients\PreguntasFeignClient.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\models\ProyectosPhotos.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\models\Proyectos.java
 S:\Users\Documentos\SmartCity\Aplicacion\workspace\App-Proyectos\src\main\java\com\app\proyectos\repository\ProyectosRepository.java

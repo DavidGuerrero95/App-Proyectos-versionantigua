@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "app-interventor")
 public interface InterventorFeignClient {
 
-	@PostMapping("/interventor/proyectosEliminar")
-	public Boolean peticionEliminarProyectos(@RequestParam("nombre") String nombre);
+	@PostMapping("/interventor/proyectosEliminar/")
+	public Boolean peticionEliminarProyectos(@RequestParam("codigoProyecto") Integer codigoProyecto);
 
 	@PutMapping("/interventor/eliminar/peticion/proyecto/")
-	public Boolean eliminarPeticionProyecto(@RequestParam("nombre") String nombre);
+	public Boolean eliminarPeticionProyecto(@RequestParam("codigoProyecto") Integer codigoProyecto);
 }
