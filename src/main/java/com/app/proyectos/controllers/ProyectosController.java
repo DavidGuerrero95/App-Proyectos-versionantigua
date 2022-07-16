@@ -152,10 +152,9 @@ public class ProyectosController {
 						e -> errorCreacionSuscripcion(e))) {
 					log.info("Creacion -> Suscripcion");
 
-					if (cbFactory
-							.create("proyecto").run(
-									() -> gClient.crearGamificacion(proyectos.getCodigoProyecto(), null, null, null,
-											null, null, null, null, null, null, null),
+					if (cbFactory.create("proyecto")
+							.run(() -> gClient.crearGamificacion(proyectos.getCodigoProyecto(), null, null, null, null,
+									null, proyectos.getActivo(), null, null, null, null),
 									e -> errorCreacionGamificacion(e))) {
 						log.info("Creacion -> Suscripcion");
 						try {
@@ -503,10 +502,7 @@ public class ProyectosController {
 					e -> errorConexion(e))) {
 				log.info("Eliminacion Suscripciones");
 			}
-			if (cbFactory.create("proyecto").run(() -> nClient.borrarSuscripciones(codigoProyecto),
-					e -> errorConexion(e))) {
-				log.info("Eliminacion Suscripciones");
-			}
+
 			if (cbFactory.create("proyecto").run(() -> pregClient.eliminarProyecto(proyectos.getCodigoProyecto()),
 					e -> errorConexion(e))) {
 				log.info("Eliminacion Preguntas -> Correctamente");
@@ -516,10 +512,7 @@ public class ProyectosController {
 					e -> errorConexion(e))) {
 				log.info("Eliminacion Respuestas -> Correctamente");
 			}
-			if (cbFactory.create("proyecto").run(() -> nClient.eliminarProyecto(proyectos.getCodigoProyecto()),
-					e -> errorConexion(e))) {
-				log.info("Eliminacion Proyecto Notificaciones -> Correctamente");
-			}
+
 			return true;
 		} catch (Exception e2) {
 			throw new IOException("error eliminar proyecto, proyectos: " + e2.getMessage());
