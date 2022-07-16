@@ -153,8 +153,8 @@ public class ProyectosController {
 					log.info("Creacion -> Suscripcion");
 
 					if (cbFactory.create("proyecto")
-							.run(() -> gClient.crearGamificacion(proyectos.getCodigoProyecto(), null, null, null, null,
-									null, proyectos.getActivo(), null, null, null, null),
+							.run(() -> gClient.crearGamificacion(proyectos.getCodigoProyecto(), null, null, null,
+									new Date(), null, proyectos.getActivo(), null, null, null, null),
 									e -> errorCreacionGamificacion(e))) {
 						log.info("Creacion -> Suscripcion");
 						try {
@@ -169,7 +169,7 @@ public class ProyectosController {
 						eClient.borrarEstadisticas(proyectos.getCodigoProyecto());
 						mClient.eliminarProyecto(proyectos.getMuro(), proyectos.getCodigoProyecto());
 						throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-								"Servicio Suscripcion no esta disponible");
+								"Servicio Gamificacion no esta disponible");
 					}
 				} else {
 					eClient.borrarEstadisticas(proyectos.getCodigoProyecto());
