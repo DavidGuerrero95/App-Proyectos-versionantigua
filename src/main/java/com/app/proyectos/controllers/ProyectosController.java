@@ -134,15 +134,15 @@ public class ProyectosController {
 			proyectos.setFechaLanzamiento(new Date());
 		}
 
-		if (proyectos.getMuro() == null) {
-			proyectos.setMuro(cbFactory.create("proyecto").run(
-					() -> mClient.crearMurosProyectos(proyectos.getCodigoProyecto(), proyectos.getUbicacion()),
-					e -> errorCreacionMuro(e)));
-		}
-
 		if (cbFactory.create("proyecto").run(() -> paramClient.agregarProyecto(), e -> errorCreacionParametros(e))) {
 			log.info("parametro agregado correctamente -> servicio parametros");
 			proyectos.setCodigoProyecto(paramClient.obtenerCodigo());
+
+			if (proyectos.getMuro() == null) {
+				proyectos.setMuro(cbFactory.create("proyecto").run(
+						() -> mClient.crearMurosProyectos(proyectos.getCodigoProyecto(), proyectos.getUbicacion()),
+						e -> errorCreacionMuro(e)));
+			}
 
 			if (cbFactory.create("proyecto").run(() -> eClient.crearEstadistica(proyectos.getCodigoProyecto()),
 					e -> errorCreacionEstadistica(e))) {
@@ -182,7 +182,6 @@ public class ProyectosController {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio Estadistica no esta disponible");
 			}
 		} else {
-			mClient.eliminarProyecto(proyectos.getMuro(), proyectos.getCodigoProyecto());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio Parametros no esta disponible");
 		}
 	}
